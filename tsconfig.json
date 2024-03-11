@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "module": "NodeNext",
+        "moduleResolution": "node",
+        "baseUrl": "src",
+        "outDir": "dist",
+        "sourceMap": true,
+        "noImplicitAny": false,
+    },
+    // means include all folders inside src folder and all the files inside them.
+    "include": ["src/**/*"]
+}
