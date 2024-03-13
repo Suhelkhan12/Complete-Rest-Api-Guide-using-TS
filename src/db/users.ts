@@ -26,20 +26,20 @@ const UserSchema = new mongoose.Schema({
 })
 
 // converting user schema in user model
-export const UserModal = mongoose.model('User', UserSchema);
+export const userModel = mongoose.model('User', UserSchema);
 
 
 // actions for controllers 
-export const getUsers = ()=> UserModal.find();
-export const getUserByEmail = (email: string)=> UserModal.findOne({email}) // sent filter inside findOne
+export const getUsers = ()=> userModel.find();
+export const getUserByEmail = (email: string)=> userModel.findOne({email}) // sent filter inside findOne
 
 // this is object dot notation is used to get a nested embed document as it is filter so we are giving session token to it for comparison
-export const getUserBySessionToken = (sessionToken: string) => UserModal.findOne({"authentication.sessionToken": sessionToken});
+export const getUserBySessionToken = (sessionToken: string) => userModel.findOne({"authentication.sessionToken": sessionToken});
 
-export const getUserById = (id: string) => UserModal.findById({id})
+export const getUserById = (id: string) => userModel.findById({id})
 
-export const createUser = async (values: Record<string , any>) => new UserModal(values).save().then((user)=> user.toObject())
+export const createUser = async (values: Record<string , any>) => new userModel(values).save().then((user)=> user.toObject())
 
-export const deleteUserById = (id:string)=> UserModal.findOneAndDelete({_id: id})
+export const deleteUserById = (id:string)=> userModel.findOneAndDelete({_id: id})
 
-export const updateUserById = (id: string , values: Record<string ,any>)=> UserModal.findByIdAndUpdate(id , values)
+export const updateUserById = (id: string , values: Record<string ,any>)=> userModel.findByIdAndUpdate(id , values)
