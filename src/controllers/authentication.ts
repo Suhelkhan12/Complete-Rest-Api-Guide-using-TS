@@ -1,5 +1,5 @@
-import { createUser, getUserByEmail } from 'db/users';
-import { authentication, random } from 'helpers';
+import { createUser, getUserByEmail } from '../db/users';
+import { authentication, random } from '../helpers';
 import express from 'express';
 
 // creating register controller
@@ -28,10 +28,46 @@ export const register = async(req: express.Request, res: express.Response)=>{
             }
         });
 
-        return res.sendStatus(200).json(user);
+        return res.status(200).json(user);
 
     }catch(err){
         console.log(err);
         return res.sendStatus(400)
+    }
+}
+
+// login controller
+export const login =async (req: express.Request, res: express.Response)=>{
+    try{
+        const {email, password} = req.body;
+
+        if(!email || !password){
+            return res.sendStatus(400);
+        }
+
+        const user = await getUserByEmail(email).select('+authentication.salt +authentication.password')
+
+        if(!user){
+            return res.sendStatus(400);
+        }
+
+        const expectedHash = authentication(user.authentication.salt, password);
+
+        if(user.authentication.password !== expectedHash){
+            return res.sendStatus(403);
+        }
+
+        const salt = random();
+        user.authentication.sessionToken = authentication(salt, user._id.toString());
+
+        await user.save();
+
+        res.cookie('SUHEL_AUTH', user.authentication.sessionToken ,{domain: 'localhost', path: '/'});
+
+        return res.status(200).json(user).end();
+
+    }catch(err){
+        console.log(err);
+        res.sendStatus(400);
     }
 }
